@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-const imageStorage = multer.diskStorage({
+const fileStorage = multer.diskStorage({
   // Destination to store image
   destination: "media",
   filename: (req, file, cb) => {
@@ -22,13 +22,13 @@ const imageStorage = multer.diskStorage({
   },
 });
 
-const imageUpload = multer({
-  storage: imageStorage,
+const fileUpload = multer({
+  storage: fileStorage,
   limits: {
     fileSize: 1000000, // 1000000 Bytes = 1 MB
   },
   fileFilter(req, file, cb) {
-    if (!file.originalname.match(/\.(png|jpg)$/)) {
+    if (!file.originalname.match(/\.(png|jpg|mp3)$/)) {
       // upload only png and jpg format
       return cb(new Error("Please upload a Image"));
     }
@@ -42,7 +42,18 @@ app.get("/", (req, res) => {
 
 app.post(
   "/uploadImage",
-  imageUpload.single("image"),
+  fileUpload.single("image"),
+  (req, res) => {
+    res.send(req.file);
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
+
+app.post(
+  "/uploadAudio",
+  fileUpload.single("audio"),
   (req, res) => {
     res.send(req.file);
   },
