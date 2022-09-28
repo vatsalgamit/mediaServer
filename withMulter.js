@@ -29,8 +29,7 @@ const fileUpload = multer({
   },
   fileFilter(req, file, cb) {
     if (!file.originalname.match(/\.(png|jpg|mp3)$/)) {
-      // upload only png and jpg format
-      return cb(new Error("Please upload a Image"));
+      return cb(new Error("Please upload a file"));
     }
     cb(undefined, true);
   },
